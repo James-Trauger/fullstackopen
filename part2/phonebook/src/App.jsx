@@ -1,28 +1,36 @@
 import Person from './person'
 import Input from './input'
 import PersonForm from './personForm'
+import axios from 'axios'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { id: '1', name: 'Arto Hellas', number: '123-4567' }
-  ]) 
+  const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [shownPersons, setShownNames] = useState(persons)
 
-  const handleInputChange = (setter) => (event) => setter(event.target.value)
-  const handleFilter = (event) => {
-    const filter = event.target.value
-    setNewFilter(filter)
+  useEffect(() => {
+    axios 
+    .get('http://localhost:3001/persons')
+    .then((response) => {
+      setPersons(response.data)
+      changeFilter(newFilter, response.data)
+    })
+  }, [])
 
+  const handleInputChange = (setter) => (event) => setter(event.target.value)
+
+  const changeFilter = (filter, people) => {
+    setNewFilter(filter)
     // filter the shown persons
-    const filteredPersons = persons.filter((person) => person.name.toLowerCase().includes(filter.toLowerCase()))
+    const filteredPersons = people.filter((person) => person.name.toLowerCase().includes(filter.toLowerCase()))
     setShownNames(filteredPersons)
   }
 
+  const handleFilter = (event) => changeFilter(event.target.value, persons)
   const handleAddNewPerson = (event) => {
     event.preventDefault()
 
