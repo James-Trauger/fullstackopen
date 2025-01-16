@@ -10,7 +10,6 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-  const [shownPersons, setShownNames] = useState(persons)
 
   useEffect(() => {
     axios 
@@ -22,13 +21,7 @@ const App = () => {
   }, [])
 
   const handleInputChange = (setter) => (event) => setter(event.target.value)
-
-  const changeFilter = (filter, people) => {
-    setNewFilter(filter)
-    // filter the shown persons
-    const filteredPersons = people.filter((person) => person.name.toLowerCase().includes(filter.toLowerCase()))
-    setShownNames(filteredPersons)
-  }
+  const changeFilter = (filter, people) => setNewFilter(filter)
 
   const handleFilter = (event) => changeFilter(event.target.value, persons)
   const handleAddNewPerson = (event) => {
@@ -52,10 +45,6 @@ const App = () => {
     setPersons(persons.concat(newNameObject))
     setNewName('')
     setNewNumber('')
-    // adjust the filter too
-    if (newName.toLowerCase().includes(newFilter.toLowerCase())) {
-      setShownNames(shownPersons.concat(newNameObject))
-    }
   }
 
   const nameField = {
@@ -66,6 +55,10 @@ const App = () => {
     value: newNumber,
     handler: handleInputChange(setNewNumber),
   }
+
+  const shownPersons = persons.filter((person) => 
+    person.name.toLowerCase().includes(newFilter.toLowerCase()))
+    .map((p) => <Person key={p.id} person={p} />)
 
   return (
     <div>
@@ -78,7 +71,7 @@ const App = () => {
         numberInput={numberField}
       />
       <h2>Numbers</h2>
-        {shownPersons.map((p) => <Person key={p.id} person={p} />)}
+        {shownPersons}
     </div>
   )
 }
