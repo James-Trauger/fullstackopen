@@ -1,4 +1,4 @@
-import DeleteButton from "./deleteButton"
+import DeleteButton from "./DeleteButton"
 
 const Person = ({person, deleteHandler}) => {
     return (

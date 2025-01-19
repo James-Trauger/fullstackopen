@@ -1,4 +1,4 @@
-import Input from "./input"
+import Input from "./Input"
 
 const PersonForm = ({onSubmit, nameInput, numberInput}) => {
     return (

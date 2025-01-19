@@ -1,7 +1,8 @@
-import Person from './person'
-import Input from './input'
-import PersonForm from './personForm'
+import Person from './components/Person'
+import Input from './components/Input'
+import PersonForm from './components/PersonForm'
 import './services/people'
+import Notification from './components/Notification'
 
 import { useState, useEffect } from 'react'
 import people from './services/people'
@@ -11,6 +12,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     people.getAll().then(p => {
@@ -44,6 +46,17 @@ const App = () => {
           people.replaceNumber(newReplacedPerson).then(replacedPerson => {
             setPersons(persons.map(p => p.id === existingPerson.id ? replacedPerson : p))
           })
+
+          // notification of a number change
+          setNotification({
+            message: `${existingPerson.name}'s number was successfully changed to ${newNumber}`,
+            isError: false
+            
+        })
+          // remove message after 5 seconds
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
       }
       } else {
         alert(`${newName} already exists`)
@@ -60,6 +73,15 @@ const App = () => {
       setPersons(persons.concat(newPerson))
       setNewName('')
       setNewNumber('')
+      // notification of a person added
+      setNotification({
+        message: `${newName} was successfully added`,
+        isError: false
+      })
+      // remove message after 5 seconds
+      setTimeout(() => {
+        setNotification(null)
+      },5000)
     })
   }
 
@@ -74,18 +96,30 @@ const App = () => {
 
   const shownPersons = persons.filter( person => 
     person.name.toLowerCase().includes(newFilter.toLowerCase()))
-    .map((p) => {
+    .map((person) => {
       return (
-        <Person key={p.id} person={p} deleteHandler={() => {
-          console.log('deleting person', p)
-          if (window.confirm(`Delete ${p.name} ?`)) {
+        <Person key={person.id} person={person} deleteHandler={() => {
+          console.log('deleting person before confirming', person)
+          if (window.confirm(`Delete ${person.name} ?`)) {
             people
-            .deletePerson(p.id).then(response => {
-              console.log(`deleting ${response}`)
-              setPersons(persons.filter(x => x.id != response.id))
+            .deletePerson(person.id).then(response => {
+              if (response.id != person.id) {
+                console.log('id of person from the server does not match the id of the person on the client')
+              }
+              console.log(`deleting after confirming ${response.id}`)
+              setPersons(persons.filter(p => p.id != response.id))
             })
             .catch(error => {
               console.log(error)
+
+              // remove the deleted person on the client
+              setPersons(persons.filter(p => p.id != person.id))
+
+              // notification for an already deleted user
+              setNotification({
+                message: `${person.name} has already been deleted`,
+                isError: true
+              })
             })
           }
         }}
@@ -96,6 +130,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification noti={notification}/>
       <Input label='filter' value={newFilter} onChange={handleFilter}/>
       <h2>add a new</h2>
       <PersonForm 
