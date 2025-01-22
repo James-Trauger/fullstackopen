@@ -99,15 +99,15 @@ const App = () => {
     .map((person) => {
       return (
         <Person key={person.id} person={person} deleteHandler={() => {
-          console.log('deleting person before confirming', person)
           if (window.confirm(`Delete ${person.name} ?`)) {
             people
             .deletePerson(person.id).then(response => {
-              if (response.id != person.id) {
-                console.log('id of person from the server does not match the id of the person on the client')
-              }
               console.log(`deleting after confirming ${response.id}`)
-              setPersons(persons.filter(p => p.id != response.id))
+              setPersons(persons.filter(p => p.id != person.id))
+              setNotification({
+                message: `${person.name} successfully deleted`,
+                isError: false
+              })
             })
             .catch(error => {
               console.log(error)
