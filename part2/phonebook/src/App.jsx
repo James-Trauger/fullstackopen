@@ -69,7 +69,8 @@ const App = () => {
     }
     console.log(`creating new person ${newPersonObject}`)
     // add the new person to the server
-    people.create(newPersonObject).then(newPerson => {
+    people.create(newPersonObject)
+    .then(newPerson => {
       setPersons(persons.concat(newPerson))
       setNewName('')
       setNewNumber('')
@@ -82,6 +83,12 @@ const App = () => {
       setTimeout(() => {
         setNotification(null)
       },5000)
+    })
+    .catch(error => {
+      setNotification({
+        message: `${error.response.data.error} has already been deleted`,
+        isError: true
+      })
     })
   }
 
