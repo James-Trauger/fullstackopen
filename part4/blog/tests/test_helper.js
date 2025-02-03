@@ -1,4 +1,5 @@
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const blogs = [
   {
@@ -59,13 +60,37 @@ const singleBlog =
     likes: 20
   }
 
+const singleUser =
+  {
+    username: 'test_username',
+    name: 'test name',
+    password: 'secret'
+  }
+
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
   return blogs.map(blog => blog.toJSON())
 }
 
+const deleteUser = async (username) => {
+  await User.deleteOne({ username: username })
+}
+
+const deleteAllUsers = async () => {
+  return await User.deleteMany({})
+}
+
+const usersInDb = async () => {
+  const users = await User.find({})
+  return users.map(user => user.toJSON())
+}
+
 module.exports = {
   blogs,
   singleBlog,
-  blogsInDb
+  singleUser,
+  blogsInDb,
+  deleteUser,
+  deleteAllUsers,
+  usersInDb,
 }
