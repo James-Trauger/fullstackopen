@@ -10,9 +10,19 @@ const Blog = require('../models/blog')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await helper.deleteAllUsers()
+
+  // add a user to create every blog
+  const userResponse = await helper.insertSingleUser()
+
+  // add userId to insert blog request
+  helper.singleBlog.userId = userResponse._id.toString()
 
   const blogObjects = helper.blogs
-    .map(blog => new Blog(blog))
+    .map(blog => {
+      blog.user = helper.singleUser._id
+      return new Blog(blog)
+    })
   await Blog.insertMany(blogObjects)
 })
 
@@ -51,15 +61,10 @@ test('blogs have an \'id\' field', async () => {
 })
 
 test('default value of likes is 0', async () => {
-  const blog =
-  {
-    title: 'Title',
-    author: 'James',
-    url: 'localhost.com',
-  }
 
+  delete helper.singleBlog.likes
   const response = await api.post('/api/blogs')
-    .send(blog)
+    .send(helper.singleBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
@@ -71,6 +76,8 @@ test('title field is required', async () => {
   {
     author: 'James',
     url: 'localhost.com',
+    likes: 2,
+    userId: helper.singleUser._id
   }
 
   await api.post('/api/blogs')
@@ -86,7 +93,8 @@ test('url field is required', async () => {
   {
     title: 'Blog',
     author: 'James',
-    likes: 3
+    likes: 3,
+    userId: helper.singleUser._id
   }
 
   await api.post('/api/blogs')
@@ -95,4 +103,22 @@ test('url field is required', async () => {
 
   const blogsFromDb = await helper.blogsInDb()
   assert.strictEqual(blogsFromDb.length, helper.blogs.length)
+})
+
+test('blogs have a user field', async () => {
+  // get all blogs
+  const response = await api.get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const user = {
+    username: helper.singleUser.username,
+    name: helper.singleUser.name,
+    id: helper.singleUser._id,
+  }
+  const userString = JSON.stringify(user)
+  assert(response.body.reduce(
+    (acc, blog) => acc && JSON.stringify(blog.user) === userString,
+    true
+  ))
 })

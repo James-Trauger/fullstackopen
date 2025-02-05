@@ -62,6 +62,7 @@ const singleBlog =
 
 const singleUser =
   {
+    _id: '67a26585ba8140e224be5f48',
     username: 'test_username',
     name: 'test name',
     password: 'secret'
@@ -80,6 +81,11 @@ const deleteAllUsers = async () => {
   return await User.deleteMany({})
 }
 
+const insertSingleUser = async () => {
+  const user = new User(singleUser)
+  return await user.save()
+}
+
 const usersInDb = async () => {
   const users = await User.find({})
   return users.map(user => user.toJSON())
@@ -92,5 +98,6 @@ module.exports = {
   blogsInDb,
   deleteUser,
   deleteAllUsers,
+  insertSingleUser,
   usersInDb,
 }

@@ -7,7 +7,7 @@ const validPassword = (pass) => {
   return pass.length >= 3
 }
 
-usersRouter.post('/', async (request, response) => {
+usersRouter.post('/', async (request, response, next) => {
   const { username, name, password } = request.body
 
   if (!(username && password)) {
@@ -27,14 +27,18 @@ usersRouter.post('/', async (request, response) => {
     passwordHash,
   })
 
-  const savedUser = await user.save()
-
-  response.status(201).json(savedUser)
+  try {
+    const savedUser = await user.save()
+    response.status(201).json(savedUser)
+  } catch (error) {
+    next(error)
+  }
 })
 
 usersRouter.get('/', async (request, response) => {
-  const users = await User.find({})
-  //.populate('notes', { content: 1, important: 1 })
+  const users = await User
+    .find({})
+    .populate('blogs', { title: 1, author: 1, url: 1, name: 1, likes: 1 })
   response.json(users)
 })
 
