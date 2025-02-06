@@ -1,11 +1,13 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imp0cmF1IiwiaWQiOiI2N2E1MGNiNDE0ODJkMzhiYWE4OTg0MmEiLCJpYXQiOjE3Mzg4Njk5OTZ9.B2jM14oYy-LzyNIOe50Q1zxcMQ4A0D1EChQlczv7BSo
 
 {
     "title": "Title",
     "author": "James",
     "url": "localhost.com",
-    "likes": 123
+    "likes": 123,
+    "userId": "67a50cb41482d38baa89842a"
 }
 
 ### 
@@ -25,3 +27,12 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3003/api/blogs
+
+###
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+  "username": "jtrau",
+  "password": "123"
+}
