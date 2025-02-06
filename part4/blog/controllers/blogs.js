@@ -1,7 +1,7 @@
 const blogRouter = require('express').Router()
-const { default: mongoose } = require('mongoose')
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const logger = require('../utils/logger')
 
 blogRouter.get('/', async (request, response) => {
   try {
@@ -18,12 +18,16 @@ blogRouter.get('/', async (request, response) => {
 blogRouter.post('/', async (request, response, next) => {
   const body = request.body
 
-  if (!body.userId) {
-    return response.status(400).json({ error: 'must provide userId to create blog post' })
+  const token = request.token
+  if (!token) {
+    return response.status(401).json({ error: 'token not provided' })
   }
-
   try {
-    const user = await User.findById(body.userId)
+
+    if (!body.userId) {
+      return response.status(400).json({ error: 'must provide userId to create blog post' })
+    }
+    const user = await User.findById(request.decodedToken.id)
     const blog = new Blog({
       title: body.title,
       author: body.author,
@@ -37,13 +41,40 @@ blogRouter.post('/', async (request, response, next) => {
     await user.save()
     response.status(201).json(savedBlog)
   } catch (exception) {
-    console.log(`exception -> ${JSON.stringify(exception)}`)
-    /*
-    if (exception instanceof mongoose.Error.ValidationError) {
-      response.status(400).end()
-    } else {
-      response.status(404).end()
-    }*/
+    next(exception)
+  }
+})
+
+blogRouter.delete('/:id', async (request, response, next) => {
+  // must have valid token
+  if (!(request.token && request.decodedToken)) {
+    return response.status(401).json({ error: 'invalid token' })
+  }
+
+  try {
+    // fetch the user
+    const user = await User
+      .findById(request.decodedToken.id)
+      .populate('blogs', { name: 1 })
+
+    const blogId = user
+      .blogs.map(blog => blog.id.toString())
+      .find(b => b === request.params.id)
+    // find blog in user's created blogs
+    // username associated with token must match with username who created the blog
+    if (!blogId) {
+      logger.error('cannot delete a blog post you did not create')
+      return response.status(401).json({ error: 'cannot delete a blog post you did not create' })
+    }
+
+    // delete the blog
+    await Blog.findByIdAndDelete(blogId)
+    // remove blogs from user collection
+    user.blogs = user.blogs.filter(blog => blog.id !== blogId)
+    await user.save()
+
+    response.status(204).end()
+  } catch (exception) {
     next(exception)
   }
 })

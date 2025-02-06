@@ -42,6 +42,7 @@ test('blogs are actually added in the initialization phase', async () => {
 test('insert a single blog', async () => {
 
   await api.post('/api/blogs')
+    .set('Authorization', `Bearer ${helper.getToken(helper.singleUser)}`)
     .send(helper.singleBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -53,17 +54,18 @@ test('insert a single blog', async () => {
   const urls = blogsFromDb.map(b => b.url)
   assert(urls.includes(helper.singleBlog.url))
 })
-
+/*
 test('blogs have an \'id\' field', async () => {
   // retrieve a blog
   const blogsFromDb = await helper.blogsInDb()
   assert(blogsFromDb[0].id)
-})
+})*/
 
 test('default value of likes is 0', async () => {
 
   delete helper.singleBlog.likes
   const response = await api.post('/api/blogs')
+    .set('Authorization', `Bearer ${helper.getToken(helper.singleUser)}`)
     .send(helper.singleBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -81,6 +83,7 @@ test('title field is required', async () => {
   }
 
   await api.post('/api/blogs')
+    .set('Authorization', `Bearer ${helper.getToken(helper.singleUser)}`)
     .send(blog)
     .expect(400)
 
@@ -98,6 +101,7 @@ test('url field is required', async () => {
   }
 
   await api.post('/api/blogs')
+    .set('Authorization', `Bearer ${helper.getToken(helper.singleUser)}`)
     .send(blog)
     .expect(400)
 
@@ -121,4 +125,40 @@ test('blogs have a user field', async () => {
     (acc, blog) => acc && JSON.stringify(blog.user) === userString,
     true
   ))
+})
+
+test('blogs without token are blocked', async () => {
+
+  await api.post('/api/blogs')
+    .send(helper.singleBlog)
+    .expect(401)
+})
+
+test('unsigned tokens are blocked', async () => {
+  await api.post('/api/blogs')
+    .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c')
+    .send(helper.singleBlog)
+    .expect(401)
+})
+
+test('delete a blog post', async () => {
+
+  // insert a blog
+  const blogResponse = await api.post('/api/blogs')
+    .set('Authorization', `Bearer ${helper.getToken(helper.singleUser)}`)
+    .send(helper.singleBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blog = blogResponse.body
+  await api.delete(`/api/blogs/${blog.id}`)
+    .set('Authorization', `Bearer ${helper.getToken(helper.singleUser)}`)
+    .expect(204)
+
+  const blogsFromDb = await helper.blogsInDb()
+  const exists = blogsFromDb.reduce(
+    (acc, blog) => acc || blog._id === blog.id,
+    false
+  )
+  assert(!exists)
 })

@@ -99,17 +99,14 @@ test('password is less than 3 characters long', async () => {
 
 test('blog is added to user document', async () => {
   // insert user
-  const userResponse = await api.post('/api/users')
-    .send(helper.singleUser)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
+  await helper.insertSingleUser()
 
-  const user = userResponse.body
   // add userId to blog post
-  helper.singleBlog.userId = user.id
+  helper.singleBlog.userId = helper.singleUser._id
 
   // insert blog
   const blogResponse = await api.post('/api/blogs')
+    .set('Authorization', `Bearer ${helper.getToken(helper.singleUser)}`)
     .send(helper.singleBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
