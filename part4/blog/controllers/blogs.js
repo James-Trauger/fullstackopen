@@ -23,10 +23,6 @@ blogRouter.post('/',
   async (request, response, next) => {
     const body = request.body
 
-    if (!body.userId) {
-      return response.status(400).json({ error: 'must provide userId to create blog post' })
-    }
-
     if (!request.user) {
       return response.status(401).json({ error: 'could not find user' })
     }
