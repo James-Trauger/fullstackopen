@@ -7,15 +7,11 @@ const setToken = newToken => {
   token = `Bearer ${newToken}`
 }
 
-const create = async (title, author, url) => {
+const create = async (blog) => {
   const config = {
     headers: { Authorization: token },
   }
-  const blog = {
-    title,
-    author,
-    url
-  }
+  
   const response = await axios.post(baseUrl, blog, config)
   return response.data
 }

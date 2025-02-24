@@ -1,5 +1,5 @@
 const TextField = ({ label, type, name, value, handler }) => {
-
+    const changeField = ({target}) => handler(target.value)
     return (
         <div>
         {label}
@@ -7,7 +7,7 @@ const TextField = ({ label, type, name, value, handler }) => {
             type={type}
             name={name}
             value={value}
-            onChange={handler}
+            onChange={changeField}
         />
         </div>
     )

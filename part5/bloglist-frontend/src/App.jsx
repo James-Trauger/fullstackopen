@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
-import TextField from './components/TextField'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
 
 const userKey = 'loggedBlogUser'
 
@@ -14,10 +16,6 @@ const App = () => {
   const [user, setUser] = useState(null)
   
   const [notification, setNotification] = useState(null)
-
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -34,8 +32,6 @@ const App = () => {
       setUser(storedUser)
     }
   }, [])
-
-  const changeTextField = (setter) => ({target}) => setter(target.value)
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -83,10 +79,10 @@ const App = () => {
     }, 5000)
   }
 
-  const handleAddBlog = async (event) => {
-    event.preventDefault()
+  const handleAddBlog = async (blogObject) => {
+    blogFormRef.current.toggleVisibility()
     try { 
-      const newBlog = await blogService.create(title, author, url)
+      const newBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(newBlog))
       setNotification({
         message: `a new blog ${newBlog.title} by ${newBlog.author}`,
@@ -115,54 +111,25 @@ const App = () => {
     )
   }
 
+  const blogFormRef = useRef()
+
   const addBlogForm = () => {
     return (
-      <form onSubmit={handleAddBlog}>
-        <TextField 
-          label="title"
-          type="text"
-          value={title}
-          name="Title"
-          handler={changeTextField(setTitle)}
-        />
-        <TextField 
-          label="author"
-          type="text"
-          value={author}
-          name="Author"
-          handler={changeTextField(setAuthor)}
-        />
-        <TextField 
-          label="url"
-          type="text"
-          value={url}
-          name="Url"
-          handler={changeTextField(setUrl)}
-        />
-        <button type="submit">create</button>
-      </form>
+      <Togglable buttonLabel="create" ref={blogFormRef}>
+        <BlogForm createBlog={handleAddBlog}/>
+      </Togglable>
     )
   }
 
   const loginForm = () => {
     return (
-      <form onSubmit={handleLogin}>
-        <TextField 
-            label="username"
-            type="text"
-            value={username}
-            name="Username"
-            handler={changeTextField(setUsername)}
-        />
-        <TextField 
-          label="password"
-          type="password"
-          value={password}
-          name="Password"
-          handler={changeTextField(setPassword)}
-        />
-        <button type="submit">login</button>
-        </form>
+      <LoginForm 
+        username={username}
+        password={password}
+        changeUsername={setUsername}
+        changePassword={setPassword}
+        handleLogin={handleLogin}
+      />
       )
   }
 
