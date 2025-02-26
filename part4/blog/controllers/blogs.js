@@ -84,4 +84,31 @@ blogRouter.delete('/:id',
     }
   })
 
+blogRouter.put('/:id',
+  middleware.extractToken,
+  middleware.verifyToken,
+  middleware.userExtractor,
+  async (request, response, next) => {
+    // must have valid token
+    if (!(request.token && request.decodedToken)) {
+      return response.status(401).json({ error: 'invalid token' })
+    }
+    const body = request.body
+    const blog = {
+      likes: body.likes,
+      author: body.author,
+      title: body.title,
+      url: body.url,
+    }
+    try {
+      const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog)
+      response.json({
+        ...updatedBlog,
+        likes: updatedBlog.likes + 1
+      })
+    } catch (exception) {
+      next(exception)
+    }
+  })
+
 module.exports = blogRouter

@@ -18,9 +18,10 @@ const App = () => {
   const [notification, setNotification] = useState(null)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    blogService.getAll().then(blogs => {
+      const sortedBlogs = blogs.sort((x, y) => y.likes - x.likes)
+      setBlogs( sortedBlogs )
+    })  
   }, [])
 
   // automatically log the user in
@@ -103,10 +104,28 @@ const App = () => {
     }
   }
 
+  const handleDelete = (blog) => async () => {
+    if (!window.confirm(`remove blog ${blog.title}`)) {
+      return
+    }
+    try {
+      await blogService.deleteBlog(blog)
+      setBlogs(blogs.filter(b => b.id !== blog.id))
+    } catch (exception) {
+      setNotification({
+        message: exception.response.data.error,
+        isError: true,
+      })
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    }
+  }
+
   const displayBlogs = () => {
     return (
       blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} deleteHandler={handleDelete(blog)} />
       )
     )
   }

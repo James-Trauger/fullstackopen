@@ -1,9 +1,20 @@
 import { useState } from "react"
+import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, deleteHandler }) => {
   const [showDetails, setShowDetails] = useState(false)
+  const [likes, setLikes] = useState(blog.likes)
 
   const changeVisibility = () => setShowDetails(!showDetails)
+
+  const handleLikes = async () => {
+    const newBlog = await blogService.likeBlog({
+      ...blog,
+      likes: likes + 1,
+    })
+    
+    setLikes(newBlog.likes)
+  }
 
   const blogDetails = () => {
     const style = {
@@ -11,11 +22,13 @@ const Blog = ({ blog }) => {
       textIndent: 20
     }
     
+
     return (
       <div style={style}>
         <p style={style}>{blog.url}</p>
-        <p style={style}>likes {blog.likes}</p>
+        <p style={style}>likes {likes} <button onClick={handleLikes}>like</button></p>
         <p style={style}>added by {blog.user.name}</p>
+        <button onClick={deleteHandler}>delete</button>
       </div>
     )
   }
