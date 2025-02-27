@@ -14,14 +14,14 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  
+
   const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs => {
       const sortedBlogs = blogs.sort((x, y) => y.likes - x.likes)
       setBlogs( sortedBlogs )
-    })  
+    })
   }, [])
 
   // automatically log the user in
@@ -47,7 +47,7 @@ const App = () => {
         userKey, JSON.stringify(user)
       )
 
-      setNotification({ 
+      setNotification({
         message: 'successfully logged in',
         isError: false
       })
@@ -71,7 +71,7 @@ const App = () => {
     setUser(null)
     // remove user from local storage
     window.localStorage.removeItem(userKey)
-    setNotification({ 
+    setNotification({
       message: 'successfully logged out',
       isError: false
     })
@@ -82,7 +82,7 @@ const App = () => {
 
   const handleAddBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    try { 
+    try {
       const newBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(newBlog))
       setNotification({
@@ -142,14 +142,14 @@ const App = () => {
 
   const loginForm = () => {
     return (
-      <LoginForm 
+      <LoginForm
         username={username}
         password={password}
         changeUsername={setUsername}
         changePassword={setPassword}
         handleLogin={handleLogin}
       />
-      )
+    )
   }
 
   const logoutForm = () => {
@@ -163,13 +163,13 @@ const App = () => {
   return (
     <div>
       <Notification noti={notification}/>
-    
-      {user === null 
-      ? <>
+
+      {user === null
+        ? <>
           <h2>Login</h2>
           { loginForm() }
         </>
-      : 
+        :
         <>
           <h2>blogs</h2>
           <p>{user.name} logged in</p>
