@@ -2,19 +2,15 @@ import { useState } from 'react'
 import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, deleteHandler }) => {
+const Blog = ({ blog, deleteHandler, likesHandler }) => {
   const [showDetails, setShowDetails] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
 
   const changeVisibility = () => setShowDetails(!showDetails)
 
   const handleLikes = async () => {
-    const newBlog = await blogService.likeBlog({
-      ...blog,
-      likes: likes + 1,
-    })
-
-    setLikes(newBlog.likes)
+    const newBlog = await likesHandler()
+    setLikes(blog.likes + 1)
   }
 
   const blogDetails = () => {
@@ -25,9 +21,12 @@ const Blog = ({ blog, deleteHandler }) => {
 
 
     return (
-      <div style={style}>
+      <div
+        style={style}
+        className='blogDetails'
+      >
         <p style={style}>{blog.url}</p>
-        <p style={style}>likes {likes} <button onClick={handleLikes}>like</button></p>
+        <p style={style}>likes {likes} <button className='likeButton' onClick={handleLikes}>like</button></p>
         <p style={style}>added by {blog.user.name}</p>
         <button onClick={deleteHandler}>delete</button>
       </div>
@@ -43,9 +42,12 @@ const Blog = ({ blog, deleteHandler }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div
+      style={blogStyle}
+      className='blog'
+    >
       {blog.title} {blog.author}
-      <button onClick={changeVisibility}>{showDetails ? 'hide' : 'view'}</button>
+      <button className='detailsButton' onClick={changeVisibility}>{showDetails ? 'hide' : 'view'}</button>
       {showDetails
         ? blogDetails()
         : <></>
@@ -56,6 +58,7 @@ const Blog = ({ blog, deleteHandler }) => {
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   deleteHandler: PropTypes.func.isRequired,
+  likesHandler: PropTypes.func.isRequired,
 }
 
 export default Blog
