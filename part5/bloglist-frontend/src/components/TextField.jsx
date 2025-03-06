@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types'
 
-const TextField = ({ label, type, name, value, handler }) => {
+const TextField = ({ label, type, name, value, handler, testid }) => {
   const changeField = ({ target }) => handler(target.value)
   return (
     <div>
       {label}
       <input
+        data-testid={testid}
         type={type}
         name={name}
         value={value}

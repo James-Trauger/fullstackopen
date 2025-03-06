@@ -36,3 +36,7 @@ Content-Type: application/json
   "username": "jtrau",
   "password": "123"
 }
+
+###
+
+POST http://localhost:3003/api/testing

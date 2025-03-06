@@ -1,24 +1,28 @@
-import TextField from './TextField'
 import PropTypes from 'prop-types'
 
 const LoginForm = ({ username, password, changeUsername, changePassword, handleLogin }) => {
   return (
     <div>
       <form onSubmit={handleLogin}>
-        <TextField
-          label="username"
-          type="text"
-          value={username}
-          name="Username"
-          handler={changeUsername}
-        />
-        <TextField
-          label="password"
-          type="password"
-          value={password}
-          name="Password"
-          handler={changePassword}
-        />
+        <div>
+          username
+          <input
+            data-testid='username'
+            value={username}
+            name="Username"
+            onChange={({ target }) => changeUsername(target.value)}
+          />
+        </div>
+        <div>
+          password
+          <input
+            data-testid='password'
+            value={password}
+            name='Password'
+            type='password'
+            onChange={({ target }) => changePassword(target.value)}
+          />
+        </div>
         <button type="submit">login</button>
       </form>
     </div>
