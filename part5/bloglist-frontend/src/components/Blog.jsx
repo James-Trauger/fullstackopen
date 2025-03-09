@@ -2,7 +2,7 @@ import { useState } from 'react'
 import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, deleteHandler, likesHandler }) => {
+const Blog = ({ blog, deleteHandler, likesHandler, userLoggedIn }) => {
   const [showDetails, setShowDetails] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
 
@@ -28,7 +28,11 @@ const Blog = ({ blog, deleteHandler, likesHandler }) => {
         <p style={style}>{blog.url}</p>
         <p style={style}>likes {likes} <button className='likeButton' onClick={handleLikes}>like</button></p>
         <p style={style}>added by {blog.user.name}</p>
-        <button onClick={deleteHandler}>delete</button>
+        {
+          blog.user.username === userLoggedIn
+            ? <button onClick={deleteHandler}>delete</button>
+            : <></>
+        }
       </div>
     )
   }

@@ -46,7 +46,6 @@ const App = () => {
       window.localStorage.setItem(
         userKey, JSON.stringify(user)
       )
-
       setNotification({
         message: 'successfully logged in',
         isError: false
@@ -84,6 +83,9 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     try {
       const newBlog = await blogService.create(blogObject)
+      newBlog.user = {
+        ...user
+      }
       setBlogs(blogs.concat(newBlog))
       setNotification({
         message: `a new blog ${newBlog.title} by ${newBlog.author}`,
@@ -133,6 +135,7 @@ const App = () => {
             ...blog,
             likes: blog.likes + 1
           })}}
+          userLoggedIn={user.username}
         />
       )
     )

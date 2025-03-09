@@ -36,7 +36,32 @@ Content-Type: application/json
   "username": "jtrau",
   "password": "123"
 }
+### 
+
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+  "username": "grr",
+  "password": "martin"
+}
+
+###
+POST http://localhost:3003/api/users 
+Content-Type: application/json
+
+{
+  "username": "grr",
+  "password": "martin",
+  "name": "George R. R. Martin"
+}
 
 ###
 
 POST http://localhost:3003/api/testing
+
+### 
+
+GET http://localhost:3003/api/blogs
+
+###
