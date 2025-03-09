@@ -23,10 +23,6 @@ blogRouter.post('/',
   async (request, response, next) => {
     const body = request.body
 
-    if (!body.userId) {
-      return response.status(400).json({ error: 'must provide userId to create blog post' })
-    }
-
     if (!request.user) {
       return response.status(401).json({ error: 'could not find user' })
     }
@@ -83,6 +79,33 @@ blogRouter.delete('/:id',
       await user.save()
 
       response.status(204).end()
+    } catch (exception) {
+      next(exception)
+    }
+  })
+
+blogRouter.put('/:id',
+  middleware.extractToken,
+  middleware.verifyToken,
+  middleware.userExtractor,
+  async (request, response, next) => {
+    // must have valid token
+    if (!(request.token && request.decodedToken)) {
+      return response.status(401).json({ error: 'invalid token' })
+    }
+    const body = request.body
+    const blog = {
+      likes: body.likes,
+      author: body.author,
+      title: body.title,
+      url: body.url,
+    }
+    try {
+      const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog)
+      response.json({
+        ...updatedBlog,
+        likes: updatedBlog.likes + 1
+      })
     } catch (exception) {
       next(exception)
     }
