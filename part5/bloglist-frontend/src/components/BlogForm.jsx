@@ -12,7 +12,7 @@ const BlogForm = ({ createBlog }) => {
     createBlog({
       title,
       author,
-      url
+      url,
     })
     setTitle('')
     setAuthor('')
@@ -21,37 +21,16 @@ const BlogForm = ({ createBlog }) => {
 
   return (
     <form onSubmit={addBlog}>
-      <TextField
-        testid={'title'}
-        label="title"
-        type="text"
-        value={title}
-        name="Title"
-        handler={setTitle}
-      />
-      <TextField
-        testid={'author'}
-        label="author"
-        type="text"
-        value={author}
-        name="Author"
-        handler={setAuthor}
-      />
-      <TextField
-        testid={'url'}
-        label="url"
-        type="text"
-        value={url}
-        name="Url"
-        handler={setUrl}
-      />
+      <TextField testid={'title'} label="title" type="text" value={title} name="Title" handler={setTitle} />
+      <TextField testid={'author'} label="author" type="text" value={author} name="Author" handler={setAuthor} />
+      <TextField testid={'url'} label="url" type="text" value={url} name="Url" handler={setUrl} />
       <button type="submit">create</button>
     </form>
   )
 }
 
 BlogForm.propTypes = {
-  createBlog: PropTypes.func.isRequired
+  createBlog: PropTypes.func.isRequired,
 }
 
 export default BlogForm

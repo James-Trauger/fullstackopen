@@ -5,13 +5,7 @@ const TextField = ({ label, type, name, value, handler, testid }) => {
   return (
     <div>
       {label}
-      <input
-        data-testid={testid}
-        type={type}
-        name={name}
-        value={value}
-        onChange={changeField}
-      />
+      <input data-testid={testid} type={type} name={name} value={value} onChange={changeField} />
     </div>
   )
 }
@@ -21,7 +15,7 @@ TextField.propTypes = {
   type: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
-  handler: PropTypes.func.isRequired
+  handler: PropTypes.func.isRequired,
 }
 
 export default TextField

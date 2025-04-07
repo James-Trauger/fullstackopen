@@ -7,7 +7,7 @@ const LoginForm = ({ username, password, changeUsername, changePassword, handleL
         <div>
           username
           <input
-            data-testid='username'
+            data-testid="username"
             value={username}
             name="Username"
             onChange={({ target }) => changeUsername(target.value)}
@@ -16,17 +16,18 @@ const LoginForm = ({ username, password, changeUsername, changePassword, handleL
         <div>
           password
           <input
-            data-testid='password'
+            data-testid="password"
             value={password}
-            name='Password'
-            type='password'
+            name="Password"
+            type="password"
             onChange={({ target }) => changePassword(target.value)}
           />
         </div>
         <button type="submit">login</button>
       </form>
     </div>
-  )}
+  )
+}
 
 LoginForm.propTypes = {
   username: PropTypes.string.isRequired,

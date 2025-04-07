@@ -16,23 +16,20 @@ const Blog = ({ blog, deleteHandler, likesHandler, userLoggedIn }) => {
   const blogDetails = () => {
     const style = {
       margin: 0,
-      textIndent: 20
+      textIndent: 20,
     }
 
-
     return (
-      <div
-        style={style}
-        className='blogDetails'
-      >
+      <div style={style} className="blogDetails">
         <p style={style}>{blog.url}</p>
-        <p style={style}>likes {likes} <button className='likeButton' onClick={handleLikes}>like</button></p>
+        <p style={style}>
+          likes {likes}{' '}
+          <button className="likeButton" onClick={handleLikes}>
+            like
+          </button>
+        </p>
         <p style={style}>added by {blog.user.name}</p>
-        {
-          blog.user.username === userLoggedIn
-            ? <button onClick={deleteHandler}>delete</button>
-            : <></>
-        }
+        {blog.user.username === userLoggedIn ? <button onClick={deleteHandler}>delete</button> : <></>}
       </div>
     )
   }
@@ -42,22 +39,19 @@ const Blog = ({ blog, deleteHandler, likesHandler, userLoggedIn }) => {
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
-    marginBottom: 5
+    marginBottom: 5,
   }
 
   return (
-    <div
-      style={blogStyle}
-      className='blog'
-    >
+    <div style={blogStyle} className="blog">
       {blog.title} {blog.author}
-      <button className='detailsButton' onClick={changeVisibility}>{showDetails ? 'hide' : 'view'}</button>
-      {showDetails
-        ? blogDetails()
-        : <></>
-      }
+      <button className="detailsButton" onClick={changeVisibility}>
+        {showDetails ? 'hide' : 'view'}
+      </button>
+      {showDetails ? blogDetails() : <></>}
     </div>
-  )}
+  )
+}
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,

@@ -11,11 +11,7 @@ const blog = {
 test('blog form submit button calls event handler', async () => {
   const createBlog = vi.fn()
 
-  const container = render(
-    <BlogForm
-      createBlog={createBlog}
-    />
-  )
+  const container = render(<BlogForm createBlog={createBlog} />)
   const user = userEvent.setup()
   const inputs = container.getAllByRole('textbox')
   const titleInput = inputs[0]

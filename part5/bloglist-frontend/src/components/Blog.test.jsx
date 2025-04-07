@@ -8,18 +8,15 @@ const blog = {
   url: 'localhost.com',
   likes: 10,
   user: {
-    name: 'jtrau'
-  }
+    name: 'jtrau',
+  },
 }
 
 test('renders title and author but not url and likes', () => {
-
   const mockDelete = vi.fn()
   const mockLike = vi.fn()
 
-  const { container } = render (
-    <Blog blog={blog} deleteHandler={mockDelete} likesHandler={mockLike}/>
-  )
+  const { container } = render(<Blog blog={blog} deleteHandler={mockDelete} likesHandler={mockLike} />)
 
   const blogDiv = container.querySelector('.blog')
 
@@ -33,14 +30,11 @@ test('renders title and author but not url and likes', () => {
   expect(blogDetailsDiv).toBeNull()
 })
 
-
 test('shows url and likes after button click', async () => {
   const mockDelete = vi.fn()
   const mockLike = vi.fn()
 
-  const { container } = render(
-    <Blog blog={blog} deleteHandler={mockDelete} likesHandler={mockLike}/>
-  )
+  const { container } = render(<Blog blog={blog} deleteHandler={mockDelete} likesHandler={mockLike} />)
 
   // click the view button
   const button = container.querySelector('.detailsButton')
@@ -58,16 +52,13 @@ test('click like button test', async () => {
   const mockDelete = vi.fn()
   const mockLike = vi.fn()
 
-  const { container } = render(
-    <Blog blog={blog} deleteHandler={mockDelete} likesHandler={mockLike}/>
-  )
+  const { container } = render(<Blog blog={blog} deleteHandler={mockDelete} likesHandler={mockLike} />)
 
   // click the view button
   const button = container.querySelector('.detailsButton')
   expect(button).toBeDefined()
   const user = userEvent.setup()
   await user.click(button)
-
 
   // click the like button
   const likeButton = container.querySelector('.likeButton')
