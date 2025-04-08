@@ -46,10 +46,10 @@ const App = () => {
       blogService.setToken(user.token)
       // save the user in the browser
       window.localStorage.setItem(userKey, JSON.stringify(user))
-      dispatch(setNotification('successfully logged in', 5))
+      dispatch(setNotification('successfully logged in', false, 5))
     } catch (exception) {
       //console.log(JSON.stringify(exception))
-      dispatch(setNotification(exception.response.data.error, 5))
+      dispatch(setNotification(exception.response.data.error, true, 5))
     }
   }
 
@@ -58,7 +58,7 @@ const App = () => {
     setUser(null)
     // remove user from local storage
     window.localStorage.removeItem(userKey)
-    dispatch(setNotification('successfully logged out', 5))
+    dispatch(setNotification('successfully logged out', false, 5))
   }
 
   const handleAddBlog = async (blogObject) => {
@@ -69,10 +69,10 @@ const App = () => {
         ...user,
       }
       setBlogs(blogs.concat(newBlog))
-      dispatch(setNotification(`a new blog ${newBlog.title} by ${newBlog.author}`, 5))
+      dispatch(setNotification(`a new blog ${newBlog.title} by ${newBlog.author}`, false, 5))
     } catch (exception) {
       //console.log(`error body ${JSON.stringify(exception.response.data.error)}`)
-      dispatch(setNotification(exception.response.data.error, 5))
+      dispatch(setNotification(exception.response.data.error, true,  5))
     }
   }
 
@@ -83,8 +83,9 @@ const App = () => {
     try {
       await blogService.deleteBlog(blog)
       setBlogs(blogs.filter((b) => b.id !== blog.id))
+      dispatch(setNotification(`blog ${blog.title} by ${blog.author} was deleted`, false, 5))
     } catch (exception) {
-      dispatch(setNotification(exception.response.data.error, 5))
+      dispatch(setNotification(exception.response.data.error, true, 5))
     }
   }
 
