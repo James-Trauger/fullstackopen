@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 
 const Notification = () => {
-  const notification = useSelector(({notification }) => notification)
+  const notification = useSelector(({ notification }) => notification)
   if (!notification.message) {
     return null
   }
@@ -15,7 +15,7 @@ const Notification = () => {
     marginBottom: 10,
   }
 
-  return <div style={{ ...style, color: notification.isError ? 'red' : 'green' }}>{notification.message}</div>
+  return <div style={{ ...style, color: notification.isError ? 'red' : '#279c27' }}>{notification.message}</div>
   //return <div style={style}>{notification.message}</div>
 }
 

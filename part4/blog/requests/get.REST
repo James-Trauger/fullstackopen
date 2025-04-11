@@ -65,3 +65,11 @@ POST http://localhost:3003/api/testing
 GET http://localhost:3003/api/blogs
 
 ###
+
+POST http://localhost:3003/api/blogs/67ce2291171765cfefb928ad/comments
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imp0cmF1IiwiaWQiOiI2N2NlMjI5MDE3MTc2NWNmZWZiOTI4YTIiLCJpYXQiOjE3NDQ0MDIyMTF9.TKbc-3hqun3PniN93tXUWyWrxaI9s-_Ga7KQ2vjP1I8
+
+{
+  "comment": "test comment"
+}

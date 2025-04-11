@@ -1,16 +1,36 @@
-import { useState } from 'react'
-import blogService from '../services/blogs'
-import PropTypes from 'prop-types'
+import { useDispatch, useSelector } from 'react-redux'
+import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
+import { useParams } from 'react-router-dom'
+import Comment from './Comment'
 
-const Blog = ({ blog, deleteHandler, likesHandler, userLoggedIn }) => {
-  const [showDetails, setShowDetails] = useState(false)
-  const [likes, setLikes] = useState(blog.likes)
+const Blog = () => {
+  const id = useParams().id
+  const blog = useSelector(({ notification, blogs }) => blogs.find((blog) => blog.id === id))
+  //const [likes, setLikes] = useState(0)
+  const dispatch = useDispatch()
+  const userLoggedIn = useSelector(({ notification, blogs, user }) => user.username)
 
-  const changeVisibility = () => setShowDetails(!showDetails)
+  if (!blog) {
+    return null
+  }
 
   const handleLikes = async () => {
-    const newBlog = await likesHandler()
-    setLikes(blog.likes + 1)
+    try {
+      dispatch(likeBlog(blog))
+      //setLikes(blog.likes + 1)
+    } catch (exception) {
+      dispatch(setNotification(exception.response.data.error, true, 5))
+    }
+  }
+
+  const handleDelete = async () => {
+    try {
+      dispatch(deleteBlog(blog))
+      dispatch(setNotification(`blog ${blog.title} by ${blog.author} was deleted`, false, 5))
+    } catch (exception) {
+      dispatch(setNotification(exception.response.data.error, true, 5))
+    }
   }
 
   const blogDetails = () => {
@@ -23,13 +43,14 @@ const Blog = ({ blog, deleteHandler, likesHandler, userLoggedIn }) => {
       <div style={style} className="blogDetails">
         <p style={style}>{blog.url}</p>
         <p style={style}>
-          likes {likes}{' '}
+          likes {blog.likes}{' '}
           <button className="likeButton" onClick={handleLikes}>
             like
           </button>
         </p>
         <p style={style}>added by {blog.user.name}</p>
-        {blog.user.username === userLoggedIn ? <button onClick={deleteHandler}>delete</button> : <></>}
+        {blog.user.username === userLoggedIn ? <button onClick={handleDelete}>delete</button> : <></>}
+        <Comment blog={blog} />
       </div>
     )
   }
@@ -44,19 +65,9 @@ const Blog = ({ blog, deleteHandler, likesHandler, userLoggedIn }) => {
 
   return (
     <div style={blogStyle} className="blog">
-      {blog.title} {blog.author}
-      <button className="detailsButton" onClick={changeVisibility}>
-        {showDetails ? 'hide' : 'view'}
-      </button>
-      {showDetails ? blogDetails() : <></>}
+      {blogDetails()}
     </div>
   )
-}
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  deleteHandler: PropTypes.func.isRequired,
-  likesHandler: PropTypes.func.isRequired,
 }
 
 export default Blog
