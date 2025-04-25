@@ -23,6 +23,12 @@ const schema = new mongoose.Schema({
     // current year
     max: new Date().getFullYear(),
   },
+  booksWritten: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Book',
+    },
+  ],
 })
 
 module.exports = mongoose.model('Author', schema)
