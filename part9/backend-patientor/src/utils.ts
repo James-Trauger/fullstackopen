@@ -1,55 +1,64 @@
-import { Gender, NewPatient } from "./types";
+import z from 'zod';
+import { Gender } from "./types";
 
-const isString = (text: unknown): text is string => {
-    return typeof text === 'string' || text instanceof String;
-};
+export const NewPatientSchema = z.object({
+    name: z.string(),
+    dateOfBirth: z.string().date(),
+    ssn: z.string(),
+    gender: z.nativeEnum(Gender),
+    occupation: z.string(),
+});
 
-const parseString = (str: unknown, fieldName: string): string => {
-    if (!isString(str)) {
-        throw new Error(`incorrect or missing data for field ${fieldName}=${str}`);
-    }
-    return str;
-};
+// const isString = (text: unknown): text is string => {
+//     return typeof text === 'string' || text instanceof String;
+// };
 
-const isDate = (date: string): boolean => {
-    return Boolean(Date.parse(date));
-};
+// const parseString = (str: unknown, fieldName: string): string => {
+//     if (!isString(str)) {
+//         throw new Error(`incorrect or missing data for field ${fieldName}=${str}`);
+//     }
+//     return str;
+// };
 
-const parseDate = (date: unknown): string => {
-    if (!isString(date) || !isDate(date)) {
-        throw new Error('Incorrect or missing date ' + date);
-    }
-    return date;
-};
+// const isDate = (date: string): boolean => {
+//     return Boolean(Date.parse(date));
+// };
 
-const isGender = (param: string): param is Gender => {
-    return Object.values(Gender).map(g => g.toString()).includes(param);
-};
+// const parseDate = (date: unknown): string => {
+//     if (!isString(date) || !isDate(date)) {
+//         throw new Error('Incorrect or missing date ' + date);
+//     }
+//     return date;
+// };
 
-const parseGender = (gender: unknown): Gender => {
-    if (!isString(gender) || !isGender(gender)) {
-        throw new Error('Incorrect or missing gender');
-    }
-    return gender;
-};
+// const isGender = (param: string): param is Gender => {
+//     return Object.values(Gender).map(g => g.toString()).includes(param);
+// };
 
-export const toNewPatient = (object: unknown): NewPatient => {
+// const parseGender = (gender: unknown): Gender => {
+//     if (!isString(gender) || !isGender(gender)) {
+//         throw new Error('Incorrect or missing gender');
+//     }
+//     return gender;
+// };
 
-    if (!object || typeof object !== 'object') {
-        throw new Error('Incorrect or missing data');
-    }
+// export const toNewPatient = (object: unknown): NewPatient => {
 
-    if ('name' in object && 'dateOfBirth' in object && 'gender' in object
-        && 'occupation' in object && 'ssn' in object
-    ) {
-        return {
-            name: parseString(object.name, 'name'),
-            dateOfBirth: parseDate(object.dateOfBirth),
-            gender: parseGender(object.gender),
-            ssn: parseString(object.ssn, 'ssn'),
-            occupation: parseString(object.occupation, 'occupation'),
-        };
-    }
+//     if (!object || typeof object !== 'object') {
+//         throw new Error('Incorrect or missing data');
+//     }
 
-    throw new Error('Incorrect data: some fields are missing');
-};
+//     if ('name' in object && 'dateOfBirth' in object && 'gender' in object
+//         && 'occupation' in object && 'ssn' in object
+//     ) {
+//         return {
+//             name: parseString(object.name, 'name'),
+//             dateOfBirth: parseDate(object.dateOfBirth),
+//             gender: parseGender(object.gender),
+//             ssn: parseString(object.ssn, 'ssn'),
+//             occupation: parseString(object.occupation, 'occupation'),
+//         };
+//     }
+
+//     throw new Error('Incorrect data: some fields are missing');
+// };
