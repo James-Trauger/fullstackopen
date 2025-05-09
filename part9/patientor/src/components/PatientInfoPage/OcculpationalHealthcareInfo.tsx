@@ -1,3 +1,4 @@
+import { List, ListItemText } from '@mui/material';
 import { OccupationalHealthcareEntry } from '../../types';
 
 interface OccupationalHealthcareEntryInfoProps {
@@ -9,13 +10,13 @@ const OccupationalHealthcareEntryInfo = (
 ) => {
   const entry = props.entry;
   return (
-    <div>
-      {entry.type}
-      {entry.employerName}
-      {entry.specialist}
-      {entry.sickLeave.startDate}
-      {entry.sickLeave.endDate}
-    </div>
+    <List>
+      <ListItemText>{entry.type}</ListItemText>
+      <ListItemText>{entry.employerName}</ListItemText>
+      <ListItemText>{entry.specialist}</ListItemText>
+      <ListItemText>{entry.sickLeave.startDate}</ListItemText>
+      <ListItemText>{entry.sickLeave.endDate}</ListItemText>
+    </List>
   );
 };
 

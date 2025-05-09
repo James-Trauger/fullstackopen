@@ -41,7 +41,7 @@ const PatientInfoPage = (props: PatientInfoPageProps) => {
           {patient.ssn ? 'ssn' : ''} {patient.ssn}
         </ListItemText>
       </List>
-      <Typography variant="h5">entries</Typography>
+      <Typography variant="h4">entries</Typography>
       {patient.entries.map((e) => (
         <EntryInfo key={e.id} entry={e} diagnoses={props.diagnoses} />
       ))}

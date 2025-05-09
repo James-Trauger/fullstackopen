@@ -1,3 +1,4 @@
+import { List, ListItemText } from '@mui/material';
 import { HealthCheckEntry } from '../../types';
 
 interface HealthCheckEntryInfoProps {
@@ -7,10 +8,10 @@ interface HealthCheckEntryInfoProps {
 const HealthCheckEntryInfo = (props: HealthCheckEntryInfoProps) => {
   const entry = props.entry;
   return (
-    <div>
-      {entry.type}
-      {entry.healthCheckRating}
-    </div>
+    <List>
+      <ListItemText>{entry.type}</ListItemText>
+      <ListItemText>{entry.healthCheckRating}</ListItemText>
+    </List>
   );
 };
 
