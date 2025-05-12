@@ -4,7 +4,7 @@ export enum Gender {
   Other = 'other',
 }
 
-export interface Dianosis {
+export interface Diagnosis {
   code: string;
   name: string;
   latin?: string;
@@ -15,7 +15,7 @@ interface BaseEntry {
   description: string;
   date: string;
   specialist: string;
-  diagnosisCodes?: Array<Dianosis['code']>;
+  diagnosisCodes?: Array<Diagnosis['code']>;
 }
 
 export enum HealthCheckRating {
@@ -45,6 +45,7 @@ interface SickLeave {
 }
 
 interface OccupationalHealthcareEntry extends BaseEntry {
+  type: 'OccupationalHealthcare';
   specialist: string;
   employerName: string;
   sickLeave: SickLeave;
@@ -68,3 +69,9 @@ export interface Patient {
 export type NonSensitivePatient = Omit<Patient, 'ssn' | 'entries'>;
 
 export type NewPatient = Omit<Patient, 'id'>;
+
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown
+  ? Omit<T, K>
+  : never;
+
+export type NewEntry = UnionOmit<Entry, 'id'>;

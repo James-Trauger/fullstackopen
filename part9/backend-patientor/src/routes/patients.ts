@@ -1,6 +1,6 @@
 import express from 'express';
 import { Request, Response, NextFunction } from 'express';
-import { NewPatient, NonSensitivePatient } from '../types';
+import { NewEntry, NewPatient, NonSensitivePatient } from '../types';
 import patientService from '../services/patientService';
 import middleware from './middleware';
 
@@ -36,6 +36,24 @@ router.post(
     try {
       const addedPatient = patientService.addPatient(req.body);
       res.json(addedPatient);
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
+);
+
+router.post(
+  '/:id',
+  middleware.newEntryParser,
+  (
+    req: Request<{ id: string }, unknown, NewEntry>,
+    res: Response<NonSensitivePatient>,
+    next: NextFunction
+  ) => {
+    try {
+      const id = req.params.id;
+      const addedEntry = patientService.addEntry(req.body, id);
+      res.json(addedEntry);
     } catch (error: unknown) {
       next(error);
     }

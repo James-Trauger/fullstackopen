@@ -1,10 +1,10 @@
-import dianoses from '../../data/diagnoses';
-import { Dianosis } from '../types';
+import diagnoses from '../../data/diagnoses';
+import { Diagnosis } from '../types';
 
-const getAllDiagnoses = (): Dianosis[] => {
-    return dianoses;
+const getAllDiagnoses = (): Diagnosis[] => {
+  return diagnoses;
 };
 
 export default {
-    getAllDiagnoses,
+  getAllDiagnoses,
 };

@@ -8,3 +8,16 @@ Content-Type: application/json
     "occupation": "Cashier",
     "ssn": "123"
 }
+
+###
+
+POST http://localhost:3001/api/patients/d2773598-f723-11e9-8f0b-362b9e155667
+Content-Type: application/json
+
+{
+    "type": "HealthCheck",
+    "description": "test",
+    "date": "2000-01-01",
+    "healthCheckRating": 0,
+    "specialist": "House MD"
+}
