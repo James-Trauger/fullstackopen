@@ -40,7 +40,6 @@ interface SickLeave {
 
 export interface OccupationalHealthcareEntry extends BaseEntry {
   type: 'OccupationalHealthcare';
-  specialist: string;
   employerName: string;
   sickLeave: SickLeave;
 }
@@ -49,6 +48,8 @@ export type Entry =
   | HealthCheckEntry
   | HospitalEntry
   | OccupationalHealthcareEntry;
+
+export type EntryType = 'HealthCheck' | 'Hospital' | 'OccupationalHealthcare';
 
 export enum Gender {
   Male = 'male',
@@ -67,6 +68,13 @@ export interface Patient {
 }
 
 export type PatientFormValues = Omit<Patient, 'id' | 'entries'>;
+
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown
+  ? Omit<T, K>
+  : never;
+
+export type NewEntry = UnionOmit<Entry, 'id'>;
+export type EntryFormValues = Omit<BaseEntry, 'id'>;
 
 export const assertNever = (value: never): never => {
   throw new Error(
