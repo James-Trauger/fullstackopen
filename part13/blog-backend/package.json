@@ -10,7 +10,8 @@
     "db:start": "docker compose up -d",
     "db:stop": "docker compose stop",
     "db:shell": "docker exec -it postgresql psql -h localhost",
-    "dev": "nodemon blog-backend"
+    "dev": "nodemon blog-backend",
+    "migration:down": "node util/rollback.js"
   },
   "dependencies": {
     "dotenv": "^16.5.0",
@@ -19,6 +20,7 @@
     "jsonwebtoken": "^9.0.2",
     "nodemon": "^3.1.10",
     "pg": "^8.16.0",
-    "sequelize": "^6.37.7"
+    "sequelize": "^6.37.7",
+    "umzug": "^3.8.2"
   }
 }

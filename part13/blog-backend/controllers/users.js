@@ -1,6 +1,6 @@
 const router = require('express').Router()
 
-const { User, Blog } = require('../models')
+const { User, Blog, ReadingList } = require('../models')
 const { tokenExtractor, userFinder } = require('../util/middleware')
 
 router.get('/', async (req, res) => {
@@ -22,12 +22,39 @@ router.post('/', async (req, res, next) => {
   }
 })
 
-router.get('/:id', async (req, res) => {
-  const user = await User.findByPk(req.params.id)
-  if (user) {
-    res.json(user)
+router.get('/:id', async (req, res, next) => {
+  const where = {}
+  if (
+    req.query.read &&
+    (req.query.read === 'true' || req.query.read === 'false')
+  ) {
+    where.read = req.query.read === 'true'
   } else {
-    res.status(404).end()
+    return res.status(400).end()
+  }
+
+  try {
+    const user = await User.findByPk(req.params.id, {
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+      include: [
+        {
+          model: Blog,
+          as: 'readings',
+          attributes: { exclude: ['createdAt', 'updatedAt', 'userId'] },
+          through: {
+            attributes: ['id', 'read'],
+            where,
+          },
+        },
+      ],
+    })
+    if (user) {
+      res.json(user)
+    } else {
+      res.status(404).end()
+    }
+  } catch (error) {
+    next(error)
   }
 })
 
